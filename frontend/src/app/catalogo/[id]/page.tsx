@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react"
 import { useParams, Link } from 'react-router-dom'
 import { Heart, Share2, ShoppingCart, Star, ChevronLeft, ThumbsUp, Activity, Scale, Droplet, Medal  } from "lucide-react"
+import ReviewsSection from "../../../components/reviews-section"
+
 
 const product = {
   id: 1,
@@ -223,7 +225,7 @@ export default function FragranceDetailPage() {
             </div>
 
             {/* Four Metrics Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 pt-5">
           <div className="bg-card border border-border rounded-lg p-4 text-center">
             <div className="flex justify-center mb-2 text-secondary">{renderMetricIcon("effectiveness")}</div>
             <p className="text-xs text-muted-foreground mb-1">Efectividad</p>
@@ -249,11 +251,20 @@ export default function FragranceDetailPage() {
           </div>
         </div>
 
-          </div>
+        {/* Rate Product Button */}
+       <div className="mb-12 flex justify-center">
+            <button
+                onClick={() => setShowReviewModal(true)}
+                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition"
+            >
+                Califica este producto
+            </button>
+        </div>
 
+        </div>
           {/* Details Section */}
             <div>
-            <div className="mt-4 flex gap-3 py-6">
+            <div className="mt-4 flex gap-3 ">
                 <div className="flex-1 p-3 bg-muted border border-border rounded-lg hover:border-primary transition">
                 <img
                     src={"/placeholder.svg"}
@@ -263,65 +274,187 @@ export default function FragranceDetailPage() {
                 </div>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-6 pt-6">
 
 
-              {/* Price */}
-              <div className="mb-6 p-6 bg-muted/50 border border-border rounded-lg">
+              {/* Descritpion */}
+                <div className="mb-6 p-6 bg-muted/50 border border-border rounded-lg">
                 <h2 className="text-2xl font-serif font-bold text-foreground mb-4">Descripción</h2>
-          <p className="text-foreground leading-relaxed">{fragrance.description}</p>
+                <p className="text-foreground leading-relaxed">{fragrance.description}</p>
 
-            </div>
+                </div>
 
-              {/* Quick Info */}
+              {/* Type, Form, Objective, Seals in 2 columns */}
+            <div className="bg-card border border-border rounded-lg p-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="p-3 bg-muted/50 border border-border rounded-lg">
-                  <p className="text-muted-foreground mb-1">Género</p>
-                  <p className="font-semibold text-foreground capitalize">{fragrance.gender}</p>
+                <div>
+                  <p className="text-muted-foreground text-xs uppercase mb-1">Tipo</p>
+                  <p className="font-semibold text-foreground capitalize">{product.type}</p>
                 </div>
-                <div className="p-3 bg-muted/50 border border-border rounded-lg">
-                  <p className="text-muted-foreground mb-1">Concentración</p>
-                  <p className="font-semibold text-foreground">{fragrance.concentration}</p>
+                <div>
+                  <p className="text-muted-foreground text-xs uppercase mb-1">Forma</p>
+                  <p className="font-semibold text-foreground capitalize">{product.form}</p>
                 </div>
-                <div className="p-3 bg-muted/50 border border-border rounded-lg">
-                  <p className="text-muted-foreground mb-1">Longevidad</p>
-                  <p className="font-semibold text-foreground">{fragrance.longevity}</p>
+                <div>
+                  <p className="text-muted-foreground text-xs uppercase mb-1">Objetivo</p>
+                  <p className="font-semibold text-foreground capitalize">{product.objective}</p>
                 </div>
-                <div className="p-3 bg-muted/50 border border-border rounded-lg">
-                  <p className="text-muted-foreground mb-1">Sillage</p>
-                  <p className="font-semibold text-foreground">{fragrance.sillage}</p>
+                <div>
+                  <p className="text-muted-foreground text-xs uppercase mb-1">Sellos</p>
+                  <div className="flex flex-wrap gap-1">
+                    {product.healthSeals.map((seal, idx) => (
+                      <span key={idx} className="text-xs bg-secondary/20 text-secondary px-2 py-1 rounded">
+                        {seal}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
+
+             {/* Affected Areas with Body Silhouettes */}
+            <div className="mb-12 pt-6">
+                <h2 className="text-2xl font-serif font-bold text-foreground mb-6">Zona Afectada</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="bg-muted/50 border border-border rounded-lg p-8 flex items-center justify-center">
+                    <div className="text-center">
+                        <Activity className="w-32 h-32 mx-auto text-muted-foreground mb-4" />
+                        <p className="text-foreground font-semibold">{product.affectedAreas[0]}</p>
+                    </div>
+                    </div>
+                    <div className="bg-muted/50 border border-border rounded-lg p-8 flex items-center justify-center">
+                    <div className="text-center">
+                        <Activity className="w-32 h-32 mx-auto text-muted-foreground mb-4" />
+                        <p className="text-foreground font-semibold">{product.affectedAreas[1]}</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            </div>
           </div>
         </div>
 
+        <div className="mb-16 p-4 bg-card border border-border rounded-lg">
+        {/* Image Carousel */}
+        <h2 className="text-2xl font-serif font-bold text-foreground mb-6 text-center">
+            Imágenes del Producto
+        </h2>
+        <div className="flex justify-center gap-4 overflow-x-auto pb-4">
+            {product.additionalImages.map((img, idx) => (
+            <div
+                key={idx}
+                className="flex-shrink-0 h-48 w-48 bg-muted border border-border rounded-lg overflow-hidden"
+            >
+                <img
+                src={img || "/placeholder.svg"}
+                alt={`Product ${idx + 1}`}
+                className="w-full h-full object-cover"
+                />
+            </div>
+            ))}
+        </div>
+        </div>
 
-        {/* Pirámide Olfativa */}
-        <div className="mb-16 p-8 bg-card border border-border rounded-lg">
-          <h2 className="text-2xl font-serif font-bold text-foreground mb-6">Pirámide Olfativa</h2>
-          <div className="space-y-4">
-            <div className="p-4 bg-amber-50 border-l-4 border-amber-400 rounded-lg">
-              <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                <span className="text-amber-600">▲</span> Notas de Salida
-              </h3>
-              <p className="text-muted-foreground">{fragrance.topNotes.join(", ")}</p>
+     
+      {/* Reviews Section */}
+        <ReviewsSection
+          productId={product.id}
+          reviews={reviews}
+          onAddReview={(newReview) => setReviews([newReview, ...reviews])}
+          showMetrics={true}
+        />
+
+     {showReviewModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card">
+              <h3 className="text-xl font-serif font-bold text-foreground">Califica este producto</h3>
+              <button onClick={() => setShowReviewModal(false)} className="text-muted-foreground hover:text-foreground">
+                ✕
+              </button>
             </div>
-            <div className="p-4 bg-rose-50 border-l-4 border-rose-400 rounded-lg">
-              <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                <span className="text-rose-600">♥</span> Notas de Corazón
-              </h3>
-              <p className="text-muted-foreground">{fragrance.middleNotes.join(", ")}</p>
-            </div>
-            <div className="p-4 bg-slate-50 border-l-4 border-slate-400 rounded-lg">
-              <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                <span className="text-slate-600">■</span> Notas de Fondo
-              </h3>
-              <p className="text-muted-foreground">{fragrance.baseNotes.join(", ")}</p>
-            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                setShowReviewModal(false)
+              }}
+              className="p-6 space-y-6"
+            >
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-3">Efectividad</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} type="button" className="group">
+                      <div className="w-8 h-8 rounded-full border-2 border-secondary group-hover:bg-secondary/20" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-3">Valor/Precio</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} type="button" className="group">
+                      <div className="w-8 h-8 rounded-full border-2 border-secondary group-hover:bg-secondary/20" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-3">Facilidad de Uso</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} type="button" className="group">
+                      <div className="w-8 h-8 rounded-full border-2 border-secondary group-hover:bg-secondary/20" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-foreground mb-3">Calidad</label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} type="button" className="group">
+                      <div className="w-8 h-8 rounded-full border-2 border-secondary group-hover:bg-secondary/20" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <textarea
+                placeholder="Escribe tu comentario..."
+                rows={5}
+                className="w-full px-4 py-2 bg-input border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              />
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowReviewModal(false)}
+                  className="flex-1 py-2 border border-border rounded-lg font-semibold hover:bg-muted transition text-foreground"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition"
+                >
+                  Publicar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
+      )}
+
+
     </div>
+
+      
+</div>
   )
 }
