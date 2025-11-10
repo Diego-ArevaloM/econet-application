@@ -17,7 +17,7 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/catalogo" element={<Catalogo />} />
-            <Route path="/catalogo/:id" element={<ProductsPage />} /> {/* ← Agrega esta ruta */}
+            <Route path="/catalogo/:id" element={<ProductsPage />} /> ← Agrega esta ruta
             <Route path="/acerca-de" element={<div>Reviews Page</div>} />
             <Route path="/perfil" element={<div>Profile Page</div>} />
           </Routes>

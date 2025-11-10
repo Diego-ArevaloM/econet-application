@@ -2,7 +2,31 @@
 
 import { useState, useMemo } from "react"
 import { useParams, Link } from 'react-router-dom'
-import { Heart, Share2, ShoppingCart, Star, ChevronLeft } from "lucide-react"
+import { Heart, Share2, ShoppingCart, Star, ChevronLeft, ThumbsUp, Activity, Scale, Droplet, Medal  } from "lucide-react"
+
+const product = {
+  id: 1,
+  name: "Spirulina Premium",
+  brand: "NaturaVita",
+  image: "/spirulina-supplement.jpg",
+  brandImage: "/naturavita-logo.jpg",
+  rating: 5,
+  reviews: 2430,
+  type: "suplemento",
+  objective: "energia",
+  form: "capsulas",
+  description:
+    "La Spirulina Premium es un superalimento natural rico en proteínas, vitaminas y minerales esenciales. Perfecta para aumentar tu energía y vitalidad de forma natural y sostenible.",
+  healthSeals: ["Certificado Orgánico", "Sin GMO", "Vegano"],
+  additionalImages: ["/spirulina-supplement.jpg", "/spirulina-bottle.jpg", "/spirulina-powder.jpg"],
+  affectedAreas: ["Energía general", "Sistema inmunológico"],
+  metrics: {
+    effectiveness: 5,
+    valuePrice: 4,
+    easeOfUse: 5,
+    quality: 5,
+  },
+}
 
 // Array completo de fragancias - deberías moverlo a un archivo separado como data/fragrances.ts
 const allFragrances = [
@@ -112,6 +136,65 @@ export default function FragranceDetailPage() {
 
   const sizePrice = fragrance.sizes.find((s) => s.ml === selectedSize)?.price || fragrance.price
 
+
+
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [reviews, setReviews] = useState([
+    {
+      id: 1,
+      author: "María García",
+      avatar: "M",
+      date: "2024-01-15",
+      time: "10:30",
+      title: "Excelente para la energía",
+      content: "He estado usando esta Spirulina por un mes y noto mucha más energía durante el día. Recomendado.",
+      effectiveness: 5,
+      valuePrice: 4,
+      easeOfUse: 5,
+      quality: 5,
+    },
+    {
+      id: 2,
+      author: "Juan López",
+      avatar: "J",
+      date: "2024-01-10",
+      time: "14:20",
+      title: "Muy bueno",
+      content: "Calidad excelente, aunque el sabor tarda en acostumbrarse.",
+      effectiveness: 4,
+      valuePrice: 4,
+      easeOfUse: 4,
+      quality: 5,
+    },
+  ])
+
+  const renderMetricIcon = (type: string) => {
+    switch (type) {
+      case "effectiveness":
+        return <ThumbsUp className="w-6 h-6" />
+      case "valuePrice":
+        return <Scale className="w-6 h-6" />
+      case "easeOfUse":
+        return <Droplet className="w-6 h-6" />
+      case "quality":
+        return <Medal className="w-6 h-6" />
+      default:
+        return null
+    }
+  }
+
+  const renderStars = (rating: number) => {
+    return (
+      <div className="flex gap-1">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className={`w-2 h-2 rounded-full ${i < rating ? "bg-secondary" : "bg-muted-foreground"}`} />
+        ))}
+      </div>
+    )
+  }
+
+
+
   return (
     <div className="min-h-screen bg-background">
       {/* Breadcrumb */}
@@ -126,8 +209,11 @@ export default function FragranceDetailPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+            
           {/* Image Section */}
           <div>
+            <p className="text-muted-foreground text-sm mb-2">{fragrance.brand}</p>
+            <h1 className="text-4xl font-serif font-bold text-foreground mb-4">{fragrance.name}</h1>
             <div className="relative h-96 sm:h-[500px] bg-muted rounded-lg overflow-hidden border border-border">
               <img
                 src={fragrance.image || "/placeholder.svg"}
@@ -135,102 +221,57 @@ export default function FragranceDetailPage() {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="mt-4 flex gap-3">
-              <button className="flex-1 p-3 bg-muted border border-border rounded-lg hover:border-primary transition">
-                <img
-                  src={fragrance.image || "/placeholder.svg"}
-                  alt="thumbnail"
-                  className="w-full h-20 object-cover rounded"
-                />
-              </button>
-            </div>
+
+            {/* Four Metrics Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <div className="flex justify-center mb-2 text-secondary">{renderMetricIcon("effectiveness")}</div>
+            <p className="text-xs text-muted-foreground mb-1">Efectividad</p>
+            <p className="text-2xl font-bold text-foreground">{product.metrics.effectiveness}</p>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <div className="flex justify-center mb-2 text-secondary">{renderMetricIcon("valuePrice")}</div>
+            <p className="text-xs text-muted-foreground mb-1">Valor/Precio</p>
+            <p className="text-2xl font-bold text-foreground">{product.metrics.valuePrice}</p>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <div className="flex justify-center mb-2 text-secondary">{renderMetricIcon("easeOfUse")}</div>
+            <p className="text-xs text-muted-foreground mb-1">Facilidad de Uso</p>
+            <p className="text-2xl font-bold text-foreground">{product.metrics.easeOfUse}</p>
+          </div>
+
+          <div className="bg-card border border-border rounded-lg p-4 text-center">
+            <div className="flex justify-center mb-2 text-secondary">{renderMetricIcon("quality")}</div>
+            <p className="text-xs text-muted-foreground mb-1">Calidad</p>
+            <p className="text-2xl font-bold text-foreground">{product.metrics.quality}</p>
+          </div>
+        </div>
+
           </div>
 
           {/* Details Section */}
-          <div>
-            <div className="mb-6">
-              <p className="text-muted-foreground text-sm mb-2">{fragrance.brand}</p>
-              <h1 className="text-4xl font-serif font-bold text-foreground mb-4">{fragrance.name}</h1>
-
-              {/* Rating */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-secondary text-secondary" />
-                    ))}
-                  </div>
+            <div>
+            <div className="mt-4 flex gap-3 py-6">
+                <div className="flex-1 p-3 bg-muted border border-border rounded-lg hover:border-primary transition">
+                <img
+                    src={"/placeholder.svg"}
+                    alt="thumbnail"
+                    className="w-full h-20 object-cover rounded"
+                />
                 </div>
-                <span className="text-2xl font-bold text-foreground">{fragrance.rating}</span>
-                <span className="text-muted-foreground">({fragrance.reviews} reseñas)</span>
-              </div>
+            </div>
+
+            <div className="mb-6">
+
 
               {/* Price */}
               <div className="mb-6 p-6 bg-muted/50 border border-border rounded-lg">
-                <div className="text-4xl font-bold text-primary mb-3">${sizePrice}</div>
-                <p className="text-muted-foreground mb-4">{fragrance.availability}</p>
+                <h2 className="text-2xl font-serif font-bold text-foreground mb-4">Descripción</h2>
+          <p className="text-foreground leading-relaxed">{fragrance.description}</p>
 
-                {/* Size Selection */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-foreground mb-3">Tamaño</label>
-                  <div className="flex gap-3">
-                    {fragrance.sizes.map((size) => (
-                      <button
-                        key={size.ml}
-                        onClick={() => setSelectedSize(size.ml)}
-                        className={`px-4 py-2 rounded-lg border-2 transition font-semibold ${
-                          selectedSize === size.ml
-                            ? "border-primary bg-primary/10 text-primary"
-                            : "border-border text-foreground hover:border-primary"
-                        }`}
-                      >
-                        {size.ml}ml
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Quantity */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-foreground mb-3">Cantidad</label>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-4 py-2 border border-border rounded-lg hover:bg-muted transition"
-                    >
-                      −
-                    </button>
-                    <span className="w-12 text-center font-semibold text-foreground">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="px-4 py-2 border border-border rounded-lg hover:bg-muted transition"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 mb-4">
-                  <button className="flex-1 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition flex items-center justify-center gap-2">
-                    <ShoppingCart className="w-5 h-5" />
-                    Agregar al carrito
-                  </button>
-                  <button
-                    onClick={() => setIsFavorite(!isFavorite)}
-                    className={`px-6 py-3 rounded-lg font-semibold transition border-2 ${
-                      isFavorite
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border text-foreground hover:border-primary"
-                    }`}
-                  >
-                    <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
-                  </button>
-                  <button className="px-6 py-3 border border-border rounded-lg font-semibold hover:bg-muted transition">
-                    <Share2 className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
+            </div>
 
               {/* Quick Info */}
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -255,11 +296,6 @@ export default function FragranceDetailPage() {
           </div>
         </div>
 
-        {/* Description */}
-        <div className="mb-16 p-8 bg-muted/30 border border-border rounded-lg">
-          <h2 className="text-2xl font-serif font-bold text-foreground mb-4">Descripción</h2>
-          <p className="text-foreground leading-relaxed">{fragrance.description}</p>
-        </div>
 
         {/* Pirámide Olfativa */}
         <div className="mb-16 p-8 bg-card border border-border rounded-lg">
