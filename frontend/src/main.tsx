@@ -7,6 +7,8 @@ import Footer from './components/footer'
 import Home from './app/page'
 import Catalogo from './app/catalogo/page'
 import ProductsPage from './app/catalogo/[id]/page'
+import ProfilePage from './app/perfil/page'
+import AcercaDe from './app/paginas/acerca-de'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -18,8 +20,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<Home />} />
             <Route path="/catalogo" element={<Catalogo />} />
             <Route path="/catalogo/:id" element={<ProductsPage />} /> ← Agrega esta ruta
-            <Route path="/acerca-de" element={<div>Reviews Page</div>} />
-            <Route path="/perfil" element={<div>Profile Page</div>} />
+            <Route path="/acerca-de" element={<AcercaDe/>} />
+            <Route path="/perfil" element={<ProfilePage />} />
           </Routes>
         </main>
         <Footer />
