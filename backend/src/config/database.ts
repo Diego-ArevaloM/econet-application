@@ -2,6 +2,15 @@ import { Pool, PoolClient, QueryResult, PoolConfig } from 'pg';
 import { config, isDevelopment } from './env';
 
 /**
+ * Interfaz para las estadísticas del pool de conexiones
+ */
+interface PoolStats {
+  totalCount: number;
+  idleCount: number;
+  waitingCount: number;
+}
+
+/**
  * Clase Database con patrón Singleton
  * Maneja el pool de conexiones a PostgreSQL
  */
@@ -181,11 +190,7 @@ class Database {
   /**
    * Obtiene estadísticas del pool de conexiones
    */
-  public getPoolStats(): {
-    totalCount: number;
-    idleCount: number;
-    waitingCount: number;
-  } {
+  public getPoolStats(): PoolStats {
     return {
       totalCount: this.pool.totalCount,   // Total de clientes en el pool
       idleCount: this.pool.idleCount,     // Clientes inactivos
@@ -214,7 +219,7 @@ class Database {
   public async healthCheck(): Promise<{
     status: 'healthy' | 'unhealthy';
     responseTime: number;
-    poolStats: ReturnType<typeof this.getPoolStats>;
+    poolStats: PoolStats;
   }> {
     const start = Date.now();
     
