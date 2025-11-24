@@ -23,7 +23,7 @@ import {
   validateObject,
   getPasswordRequirements,
 } from '../utils/validators';
-import { VALIDATION_LIMITS } from '../utils/constans';
+import { VALIDATION_LIMITS } from '../utils/constants';
 
 /**
  * Interfaz para reglas de validación
