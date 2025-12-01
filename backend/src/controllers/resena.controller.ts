@@ -28,6 +28,7 @@ export class ResenaController {
       cat_valor_precio: req.body.cat_valor_precio,
       cat_facilidad_uso: req.body.cat_facilidad_uso,
       cat_calidad: req.body.cat_calidad,
+      satisfaccion_general: req.body.satisfaccion_general,
     };
 
     const result = await ResenaService.create(resenaData);

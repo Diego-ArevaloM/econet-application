@@ -257,6 +257,7 @@ export const validateResena = (
       cat_valor_precio,
       cat_facilidad_uso,
       cat_calidad,
+      satisfaccion_general, // ← NUEVO
       descripcion,
     } = req.body;
 
@@ -292,6 +293,13 @@ export const validateResena = (
       errors.push({ field: 'cat_calidad', message: 'La calificación de calidad es requerida' });
     } else if (!isValidRating(cat_calidad)) {
       errors.push({ field: 'cat_calidad', message: 'La calificación debe estar entre 0 y 5' });
+    }
+
+    // ← NUEVO: Validar satisfacción general
+    if (satisfaccion_general === undefined) {
+      errors.push({ field: 'satisfaccion_general', message: 'La satisfacción general es requerida' });
+    } else if (!isValidRating(satisfaccion_general)) {
+      errors.push({ field: 'satisfaccion_general', message: 'La satisfacción debe estar entre 0 y 5' });
     }
 
     // Validar descripción (opcional)

@@ -305,6 +305,7 @@ export interface Resena {
   cat_valor_precio: number;
   cat_facilidad_uso: number;
   cat_calidad: number;
+  satisfaccion_general: number; // ← NUEVO CAMPO
   fecha_resena?: Date;
 }
 
@@ -315,7 +316,6 @@ export interface ResenaCompleta extends Resena {
   nombres?: string;
   apellidos?: string;
   nombre_completo?: string;
-  promedio_individual?: number;
 }
 
 /**
@@ -329,6 +329,7 @@ export interface CreateResenaDto {
   cat_valor_precio: number;
   cat_facilidad_uso: number;
   cat_calidad: number;
+  satisfaccion_general: number; // ← NUEVO CAMPO
 }
 
 /**
@@ -340,6 +341,7 @@ export interface UpdateResenaDto {
   cat_valor_precio?: number;
   cat_facilidad_uso?: number;
   cat_calidad?: number;
+  satisfaccion_general?: number; // ← NUEVO CAMPO
 }
 
 /**
@@ -347,18 +349,6 @@ export interface UpdateResenaDto {
  */
 export type CalificacionValor = 0 | 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 4.5 | 5;
 
-// ============================================
-// SATISFACCIÓN GENERAL
-// ============================================
-
-/**
- * Interfaz para Satisfacción General
- */
-export interface SatisfaccionGeneral {
-  id_satisfaccion?: number;
-  id_producto: number;
-  valor_inscripcion: number;
-}
 
 // ============================================
 // TIPOS AUXILIARES

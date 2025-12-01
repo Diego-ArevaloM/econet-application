@@ -10,74 +10,73 @@ import pool, { db } from '../config/database';
 import { Resena, CreateResenaDto, UpdateResenaDto } from '../types';
 
 export class ResenaModel {
-  /**
-   * Crear reseña y actualizar calificaciones agregadas
-   * Usa transacción para consistencia
-   */
-  static async create(resena: CreateResenaDto): Promise<number> {
-    return await db.transaction(async (client) => {
-      // 1. Insertar reseña
-      const resenaResult = await client.query<{ id_resena: number }>(
-        `INSERT INTO resenas 
-         (id_usuario, id_producto, descripcion, cat_efectividad, 
-          cat_valor_precio, cat_facilidad_uso, cat_calidad)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
-         RETURNING id_resena`,
-        [
-          resena.id_usuario,
-          resena.id_producto,
-          resena.descripcion,
-          resena.cat_efectividad,
-          resena.cat_valor_precio,
-          resena.cat_facilidad_uso,
-          resena.cat_calidad,
-        ]
-      );
+/**
+ * Crear reseña y actualizar calificaciones agregadas
+ * Usa transacción para consistencia
+ */
+static async create(resena: CreateResenaDto): Promise<number> {
+  return await db.transaction(async (client) => {
+    // 1. Insertar reseña
+    const resenaResult = await client.query<{ id_resena: number }>(
+      `INSERT INTO resenas 
+       (id_usuario, id_producto, descripcion, cat_efectividad, 
+        cat_valor_precio, cat_facilidad_uso, cat_calidad, satisfaccion_general)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING id_resena`,
+      [
+        resena.id_usuario,
+        resena.id_producto,
+        resena.descripcion,
+        resena.cat_efectividad,
+        resena.cat_valor_precio,
+        resena.cat_facilidad_uso,
+        resena.cat_calidad,
+        resena.satisfaccion_general, // ← NUEVO
+      ]
+    );
 
-      const resenaId = resenaResult.rows[0].id_resena;
+    const resenaId = resenaResult.rows[0].id_resena;
 
-      // 2. Actualizar o insertar calificaciones agregadas
-      await client.query(
-        `INSERT INTO calificaciones 
-         (id_producto, sum_a_nota_efectividad, sum_a_nota_precio, 
-          sum_a_facilidad_uso, sum_a_calidad, cantidad_resenas)
-         VALUES ($1, $2, $3, $4, $5, 1)
-         ON CONFLICT (id_producto)
-         DO UPDATE SET
-           sum_a_nota_efectividad = calificaciones.sum_a_nota_efectividad + $2,
-           sum_a_nota_precio = calificaciones.sum_a_nota_precio + $3,
-           sum_a_facilidad_uso = calificaciones.sum_a_facilidad_uso + $4,
-           sum_a_calidad = calificaciones.sum_a_calidad + $5,
-           cantidad_resenas = calificaciones.cantidad_resenas + 1`,
-        [
-          resena.id_producto,
-          resena.cat_efectividad,
-          resena.cat_valor_precio,
-          resena.cat_facilidad_uso,
-          resena.cat_calidad,
-        ]
-      );
+    // 2. Actualizar o insertar calificaciones agregadas
+    await client.query(
+      `INSERT INTO calificaciones 
+       (id_producto, sum_a_nota_efectividad, sum_a_nota_precio, 
+        sum_a_facilidad_uso, sum_a_calidad, cantidad_resenas)
+       VALUES ($1, $2, $3, $4, $5, 1)
+       ON CONFLICT (id_producto)
+       DO UPDATE SET
+         sum_a_nota_efectividad = calificaciones.sum_a_nota_efectividad + $2,
+         sum_a_nota_precio = calificaciones.sum_a_nota_precio + $3,
+         sum_a_facilidad_uso = calificaciones.sum_a_facilidad_uso + $4,
+         sum_a_calidad = calificaciones.sum_a_calidad + $5,
+         cantidad_resenas = calificaciones.cantidad_resenas + 1`,
+      [
+        resena.id_producto,
+        resena.cat_efectividad,
+        resena.cat_valor_precio,
+        resena.cat_facilidad_uso,
+        resena.cat_calidad,
+      ]
+    );
 
-      return resenaId;
-    });
-  }
+    return resenaId;
+  });
+}
 
-  /**
+    /**
    * Obtener reseñas de un producto con info del usuario
    */
   static async getByProducto(productoId: number): Promise<any[]> {
     const result = await pool.query(
       `SELECT 
-         r.*,
-         u.nombres,
-         u.apellidos,
-         CONCAT(u.nombres, ' ', u.apellidos) as nombre_completo,
-         ROUND(((r.cat_efectividad + r.cat_valor_precio + 
-                 r.cat_facilidad_uso + r.cat_calidad) / 4)::numeric, 1) as promedio_individual
-       FROM resenas r
-       INNER JOIN usuarios u ON r.id_usuario = u.id_usuario
-       WHERE r.id_producto = $1
-       ORDER BY r.fecha_resena DESC`,
+        r.*,
+        u.nombres,
+        u.apellidos,
+        CONCAT(u.nombres, ' ', u.apellidos) as nombre_completo
+      FROM resenas r
+      INNER JOIN usuarios u ON r.id_usuario = u.id_usuario
+      WHERE r.id_producto = $1
+      ORDER BY r.fecha_resena DESC`,
       [productoId]
     );
 
