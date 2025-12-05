@@ -12,24 +12,17 @@ import AcercaDe from './app/paginas/acerca-de'
 import Registro from './app/registro/registro'
 import Login from './app/login/login'
 import CambiarContrasena from './app/cambiar-contrasena/cambiar-contrasena'
-import AdminDashboardLayout from './views/AdminDashboardLayout.jsx';
+import ProductoVista from './app/producto/ProductoVista'
+import ProductoPopup from './components/ProductoPopup'
+
 
 function Layout() {
   const location = useLocation();
 
-  const hideLayout = ["/registro", "/login", "/cambiar-contrasena"];
+  const hideLayout = ["/registro", "/login", "/cambiar-contrasena", "/producto-popup", "/producto-vista"];
 
   const shouldHide = hideLayout.includes(location.pathname);
 
-  const App = () => {
-    const isAdmin = true;
-
-    if (isAdmin) {
-        return <AdminDashboardLayout />;
-    }
-
-    return <div>Vista de Login</div>;
-};
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -44,6 +37,8 @@ function Layout() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
+          <Route path="/producto-vista" element={<ProductoVista />} />
+          <Route path="/producto-popup" element={<ProductoPopup />} />
         </Routes>
       </main>
       {!shouldHide && <Footer />}
