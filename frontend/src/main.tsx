@@ -14,6 +14,9 @@ import Login from './app/login/login'
 import CambiarContrasena from './app/cambiar-contrasena/cambiar-contrasena'
 import ProductoVista from './app/producto/ProductoVista'
 import ProductoPopup from './components/ProductoPopup'
+import AdminDashboardLayout from './app/administrador/AdminDashboardLayout';
+import UsuarioNoLogueadoPopup from './components/UsuarioNoLogueadoPopup'
+import VerificacionCodigoPopup from './components/VerificacionCodigoPopup'
 
 
 function Layout() {
@@ -39,6 +42,7 @@ function Layout() {
           <Route path="/cambiar-contrasena" element={<CambiarContrasena />} />
           <Route path="/producto-vista" element={<ProductoVista />} />
           <Route path="/producto-popup" element={<ProductoPopup />} />
+          <Route path="/administrador/*" element={<AdminDashboardLayout />} />
         </Routes>
       </main>
       {!shouldHide && <Footer />}
