@@ -12,7 +12,7 @@ import AcercaDe from './app/paginas/acerca-de'
 import Registro from './app/registro/registro'
 import Login from './app/login/login'
 import CambiarContrasena from './app/cambiar-contrasena/cambiar-contrasena'
-import AdminDashboardLayout from './views/AdminDashboardLayout.jsx';
+import AdminDashboardLayout from './app/administrador/AdminDashboardLayout';
 
 function Layout() {
   const location = useLocation();
